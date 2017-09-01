@@ -18,13 +18,13 @@ else:
     except:
         print("No table name provided")
 
-    csvFile = open(file_name, "rt", encoding="utf-8")
-    csvReader = csv.reader(csvFile)
-    csvFile.seek(0)
+    csv_file = open(file_name, "rt", encoding="utf-8")
+    csv_reader = csv.reader(csv_file)
+    csv_fle.seek(0)
 
     MySQL_statement = "INSERT INTO {} VALUES".format(table_name)
     line_number = 1
-    for row in csvReader:
+    for row in csv_reader:
         item_number = 1
         if line_number == 1:
             MySQL_statement += "("
