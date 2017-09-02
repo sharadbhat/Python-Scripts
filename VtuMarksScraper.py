@@ -6,7 +6,9 @@ file1 = open("Marks.csv", "w", newline='')
 file_writer = csv.writer(file1)
 file1.seek(0)
 
-base_url = "http://results.vtu.ac.in/cbcs_17/result_page.php?usn=1pe15ec"
+college_code = "pe"
+branch_code = "is"
+base_url = "http://results.vtu.ac.in/cbcs_17/result_page.php?usn=1{}15{}".format(college_code, branch_code)
 levels = [0, 0, 0, 0, 40, 45, 50, 60, 70, 80, 90, 100]
 grades = [0, 0, 0, 0, 4, 5, 6, 7, 8, 9, 10]
 multiplier = [4, 4, 4, 4, 4, 4, 2, 2]
