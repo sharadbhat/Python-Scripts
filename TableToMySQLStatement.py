@@ -1,8 +1,17 @@
 import csv
 import sys
 import os.path
+from dateutil.parser import parse
 
 file_name = ""
+
+def is_date(string):
+    try:
+        parse(string)
+        return True
+    except ValueError:
+        return False
+
 
 try:
     file_name = sys.argv[1]
@@ -28,6 +37,10 @@ else:
         for item in row:
             if item.isnumeric():
                 MySQL_statement += str(item) + ", "
+            elif is_date(item) == True:
+                date = parse(item)
+                date_string = "{0:0=4d}".format(date.year) + "/" + "{0:0=2d}".format(date.month) + "/" + "{0:0=2d}".format(date.day)
+                MySQL_statement += "\'{}\', ".format(date_string)
             else:
                 item.strip()
                 MySQL_statement += "\"{}\", ".format(item)
