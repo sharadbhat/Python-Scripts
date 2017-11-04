@@ -41,10 +41,13 @@ def add_to_db(ID):
         db.rollback()
 
 while True:
-    user = api.get_user(USER)
-    status = user.status
-    if is_tweet_read(status.id) == False:
-        speak.Speak(status.text)
-        add_to_db(status.id)
+    try:
+        user = api.get_user(USER)
+        status = user.status
+        if is_tweet_read(status.id) == False:
+            speak.Speak(status.text)
+            add_to_db(status.id)
+    except:
+        pass
 
 db.close()
