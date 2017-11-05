@@ -1,5 +1,11 @@
 # Timberman Game Bot
 
+
+## To run
+```bash
+python3 ./timberman_bot.py
+```
+
 A game bot written in python to play Timberman.
 
 
