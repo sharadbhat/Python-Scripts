@@ -1,3 +1,4 @@
+import os
 import csv
 import pymysql
 
@@ -8,6 +9,9 @@ database_name = "DATABASE_NAME"
 
 db = pymysql.connect(host=host, user=user, passwd=password, db=database_name)
 cur = db.cursor()
+
+os.mkdir("./{}".format(database_name))
+os.chdir("./{}".format(database_name))
 
 cur.execute("SHOW TABLES")
 
