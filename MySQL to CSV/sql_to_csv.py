@@ -26,8 +26,14 @@ os.chdir("./{}".format(database_name))
 for row_1 in cur.fetchall():
     table_name = row_1[0]
     csv_file = "{}.csv".format(table_name)
-    csv_file_write = open(csv_file, "wt", encoding="utf-8", newline='')
-    table_writer = csv.writer(csv_file_write)
-    cur.execute("SELECT * FROM {}".format(table_name))
-    for row_2 in cur.fetchall():
-        table_writer.writerow(row_2)
+    with open(csv_file, "wt", encoding="utf-8", newline='') as csv_file_write:
+        table_writer = csv.writer(csv_file_write)
+        cur.execute("DESC {}".format(table_name))
+        column_names = []
+        for column in cur.fetchall():
+            column_names.append(column[0])
+        columns = tuple(column_names)
+        table_writer.writerow(columns)
+        cur.execute("SELECT * FROM {}".format(table_name))
+        for row_2 in cur.fetchall():
+            table_writer.writerow(row_2)
