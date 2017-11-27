@@ -13,9 +13,6 @@ for img in soup.find_all('img'):
         break
     count = 1
 
-print(image_url)
-print(image_title)
-
 image_data=requests.get(url).content
 
 with open('random.jpg', 'wb') as handle:
