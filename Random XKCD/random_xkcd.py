@@ -15,3 +15,12 @@ for img in soup.find_all('img'):
 
 print(image_url)
 print(image_title)
+
+image_data=requests.get(url).content
+
+with open('random.jpg', 'wb') as handle:
+    response = requests.get(image_url, stream=True)
+    for block in response.iter_content(1024):
+        if not block:
+            break
+        handle.write(block)
