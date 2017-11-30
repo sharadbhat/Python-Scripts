@@ -1,5 +1,6 @@
 import requests
 import bs4
+import os
 
 url = "https://c.xkcd.com/random/comic/"
 
@@ -21,3 +22,5 @@ with open('random.jpg', 'wb') as handle:
         if not block:
             break
         handle.write(block)
+
+os.system("random.jpg")
