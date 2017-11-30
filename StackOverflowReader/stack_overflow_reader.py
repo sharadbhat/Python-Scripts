@@ -3,7 +3,7 @@ import argparse
 from requests.utils import quote
 from bs4 import BeautifulSoup
 import re
-import os
+import webbrowser
 from colorama import init, Fore
 
 def print_questions(questions, votes_list, answers_list):
@@ -11,7 +11,7 @@ def print_questions(questions, votes_list, answers_list):
     -   Prints data on to the screen with colours.
     """
     count = 1
-    print(Fore.GREEN + "\nHere are the results sorted by relevance\n\n")
+    print(Fore.LIGHTGREEN_EX + "\nHere are the results sorted by relevance\n\n")
     for i in range(0, len(questions)):
         question = questions[i]
 
@@ -20,24 +20,37 @@ def print_questions(questions, votes_list, answers_list):
 
         # SET COLOUR
         if int(votes) < 2:
-            votes = Fore.RED + votes
+            votes = Fore.LIGHTRED_EX + votes
         else:
-            votes = Fore.GREEN + votes
+            votes = Fore.LIGHTGREEN_EX + votes
 
         answers = answers_list[i]
         answers_text = "answer" if answers == "1" else "answers"
 
         # SET COLOUR
         if int(answers) < 1:
-            answers = Fore.RED + answers
+            answers = Fore.LIGHTRED_EX + answers
         else:
-            answers = Fore.GREEN + answers
+            answers = Fore.LIGHTGREEN_EX + answers
 
         print(Fore.YELLOW + "Q " + str(count) + ") " + question[3:])
         print("\t", votes, votes_text + ".", answers, answers_text + ".\n")
         count += 1
 
-    user_choice = int(input("Enter question number to get answers: ")) - 1
+    try:
+        user_choice = int(input("Enter question number to get answer: ")) - 1
+    except:
+        user_choice = len(questions)
+        print("Enter a valid number.")
+    while True:
+        if user_choice >= len(questions):
+            try:
+                user_choice = int(input("Enter a valid question number to get answer: ")) - 1
+            except:
+                pass
+        else:
+            break
+
     return user_choice
 
 
@@ -86,12 +99,16 @@ def get_answers(url):
     soup = BeautifulSoup(r.text, "lxml")
 
     print("\n\n", Fore.YELLOW + "QUESTION\n")
+
+    title = soup.find("title").text.strip()
+    print(Fore.LIGHTGREEN_EX + title)
+
     full_question = soup.find("div", {"class" : "post-text"}).text.strip()
     print(full_question)
 
     try:
         accepted_answer = soup.find("div", {"class" : "accepted-answer"}).find("div", {"class" : "post-text"}).text.strip()
-        print("\n\n", Fore.GREEN + "ACCEPTED ANSWER\n")
+        print("\n\n", Fore.LIGHTGREEN_EX + "ACCEPTED ANSWER\n")
         print(accepted_answer)
     except:
         first_answer = soup.find("div", {"class" : "answer"}).find("div", {"class" : "post-text"}).text.strip()
@@ -100,7 +117,7 @@ def get_answers(url):
 
     open_browser = (input("\nOpen in browser? (Y/N) ")).lower()
     if open_browser == "y":
-        os.startfile(url)
+        webbrowser.open(url)
 
     return_back = (input("Return back to results? (Y/N) ")).lower()
     if return_back == "y":
