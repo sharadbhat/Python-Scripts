@@ -23,18 +23,40 @@ soup = BeautifulSoup(r.text, "lxml")
 
 divs = soup.findAll("div", {"class" : "question-summary search-result"})
 
-for i in range(0,15):# (10 if (10 < len(divs)) else len(divs))):
+count = 1
+links = []
+
+print(Fore.GREEN + "\nHere are the results sorted by relevance\n\n")
+
+for i in range(0, (10 if (10 < len(divs)) else len(divs))):
     question = divs[i].a.text.strip()
     if question[0] == "Q":
-        excerpt = divs[i].find("div", {"class" : "excerpt"}).text.strip()
+        #excerpt = divs[i].find("div", {"class" : "excerpt"}).text.strip()
+        # FIND LINK
+        link = "https://stackoverflow.com" + (divs[i].find("a"))['href'].strip()
+        links.append(link)
+
+        # FIND VOTE COUNT
         votes = divs[i].find("span", {"class" : "vote-count-post"}).text.strip()
+        votes_text = "vote" if votes == "1" else "votes"
+        if int(votes) < 2:
+            votes = Fore.RED + votes
+        else:
+            votes = Fore.GREEN + votes
+
+        # FIND ANSWER COUNT
         try:
             answers = divs[i].find("div", {"class" : "status answered-accepted"}).text.strip()
         except:
             answers = divs[i].find("div", {"class" : "status answered"}).text.strip()
         answers = ''.join(re.findall(r'\d+', answers))
-        print(Fore.YELLOW + question)
-        print(excerpt)
-        votes_text = "vote" if votes == "1" else "votes"
         answers_text = "answer" if answers == "1" else "answers"
-        print(votes, votes_text + ".", answers, answers_text + ".")
+
+        if int(answers) < 1:
+            answers = Fore.RED + answers
+        else:
+            answers = Fore.GREEN + answers
+
+        print(Fore.YELLOW + "Q " + str(count) + ") " + question[3:])
+        print("\t", votes, votes_text + ".", answers, answers_text + ".\n")
+        count += 1
