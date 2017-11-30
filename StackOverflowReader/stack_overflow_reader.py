@@ -69,7 +69,9 @@ def get_questions_data(soup):
 
 
 if __name__ == '__main__':
-    init(autoreset=True)
+    init(autoreset=True) # For colorama
+
+    url = "http://stackoverflow.com/search?q="
 
     parser = argparse.ArgumentParser(description='Get answers from Stack Overflow')
     parser.add_argument("-q", "--query", help="Enter question to search SO")
@@ -79,7 +81,11 @@ if __name__ == '__main__':
     query = args.query
     tag = args.tag
 
-    url = "http://stackoverflow.com/search?q=" + quote(query)
+    if tag:
+        url += "[{}]+".format(quote(tag))
+
+    url += quote(query)
+    
     r = requests.get(url=url)
     soup = BeautifulSoup(r.text, "lxml")
 
