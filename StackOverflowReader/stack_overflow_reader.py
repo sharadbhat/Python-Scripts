@@ -3,6 +3,9 @@ import argparse
 from requests.utils import quote
 from bs4 import BeautifulSoup
 import re
+from colorama import init, Fore
+
+init(autoreset=True)
 
 parser = argparse.ArgumentParser(description='Get answers from Stack Overflow')
 parser.add_argument("-q", "--query", help="Enter question to search SO")
@@ -30,7 +33,7 @@ for i in range(0,15):# (10 if (10 < len(divs)) else len(divs))):
         except:
             answers = divs[i].find("div", {"class" : "status answered"}).text.strip()
         answers = ''.join(re.findall(r'\d+', answers))
-        print(question)
+        print(Fore.YELLOW + question)
         print(excerpt)
         votes_text = "vote" if votes == "1" else "votes"
         answers_text = "answer" if answers == "1" else "answers"
