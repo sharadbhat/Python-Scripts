@@ -69,7 +69,6 @@ def get_questions_data(url):
     answers_list = []
     divs = soup.findAll("div", {"class" : "question-summary search-result"})
     for i in range(0, (10 if (10 < len(divs)) else len(divs))):
-        #excerpt = divs[i].find("div", {"class" : "excerpt"}).text.strip()
         question = divs[i].a.text.strip()
         if question[0] == "Q":
             questions.append(question)
