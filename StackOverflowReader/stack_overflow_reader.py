@@ -6,8 +6,11 @@ import re
 from colorama import init, Fore
 
 def print_questions(questions, votes_list, answers_list):
-    print(Fore.GREEN + "\nHere are the results sorted by relevance\n\n")
+    """
+    -   Prints data on to the screen with colours.
+    """
     count = 1
+    print(Fore.GREEN + "\nHere are the results sorted by relevance\n\n")
     for i in range(0, len(questions)):
             question = questions[i]
 
@@ -34,6 +37,9 @@ def print_questions(questions, votes_list, answers_list):
             count += 1
 
 def get_questions_data(soup):
+    """
+    -   Extracts relevant data from HTML page.
+    """
     count = 1
     links = []
     questions = []
