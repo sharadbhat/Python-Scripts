@@ -5,61 +5,78 @@ from bs4 import BeautifulSoup
 import re
 from colorama import init, Fore
 
-init(autoreset=True)
+def print_questions(questions, votes_list, answers_list):
+    print(Fore.GREEN + "\nHere are the results sorted by relevance\n\n")
+    count = 1
+    for i in range(0, len(questions)):
+            question = questions[i]
 
-parser = argparse.ArgumentParser(description='Get answers from Stack Overflow')
-parser.add_argument("-q", "--query", help="Enter question to search SO")
-parser.add_argument("-t", "--tag", help="Enter question tag")
-args = parser.parse_args()
+            votes = votes_list[i]
+            votes_text = "vote" if votes == "1" else "votes"
 
-query = args.query
-tag = args.tag
+            # SET COLOUR
+            if int(votes) < 2:
+                votes = Fore.RED + votes
+            else:
+                votes = Fore.GREEN + votes
 
-url = "http://stackoverflow.com/search?q=" + quote(query)
+            answers = answers_list[i]
+            answers_text = "answer" if answers == "1" else "answers"
 
-r = requests.get(url=url)
+            # SET COLOUR
+            if int(answers) < 1:
+                answers = Fore.RED + answers
+            else:
+                answers = Fore.GREEN + answers
 
-soup = BeautifulSoup(r.text, "lxml")
+            print(Fore.YELLOW + "Q " + str(count) + ") " + question[3:])
+            print("\t", votes, votes_text + ".", answers, answers_text + ".\n")
+            count += 1
 
-divs = soup.findAll("div", {"class" : "question-summary search-result"})
-
-count = 1
-links = []
-
-print(Fore.GREEN + "\nHere are the results sorted by relevance\n\n")
-
-for i in range(0, (10 if (10 < len(divs)) else len(divs))):
-    question = divs[i].a.text.strip()
-    if question[0] == "Q":
+def get_questions_data(soup):
+    count = 1
+    links = []
+    questions = []
+    votes_list = []
+    answers_list = []
+    divs = soup.findAll("div", {"class" : "question-summary search-result"})
+    for i in range(0, (10 if (10 < len(divs)) else len(divs))):
         #excerpt = divs[i].find("div", {"class" : "excerpt"}).text.strip()
-        # FIND LINK
-        link = "https://stackoverflow.com" + (divs[i].find("a"))['href'].strip()
-        links.append(link)
+        question = divs[i].a.text.strip()
+        if question[0] == "Q":
+            questions.append(question)
 
-        # FIND VOTE COUNT
-        votes = divs[i].find("span", {"class" : "vote-count-post"}).text.strip()
-        votes_text = "vote" if votes == "1" else "votes"
-        if int(votes) < 2:
-            votes = Fore.RED + votes
-        else:
-            votes = Fore.GREEN + votes
+            link = "https://stackoverflow.com" + (divs[i].find("a"))['href'].strip()
+            links.append(link)
 
-        # FIND ANSWER COUNT
-        try:
-            answers = divs[i].find("div", {"class" : "status answered-accepted"}).text.strip()
-        except:
-            answers = divs[i].find("div", {"class" : "status answered"}).text.strip()
-        answers = ''.join(re.findall(r'\d+', answers))
-        answers_text = "answer" if answers == "1" else "answers"
+            votes = divs[i].find("span", {"class" : "vote-count-post"}).text.strip()
+            votes_list.append(votes)
 
-        if int(answers) < 1:
-            answers = Fore.RED + answers
-        else:
-            answers = Fore.GREEN + answers
+            try:
+                answers = divs[i].find("div", {"class" : "status answered-accepted"}).text.strip()
+            except:
+                answers = divs[i].find("div", {"class" : "status answered"}).text.strip()
+            answers = ''.join(re.findall(r'\d+', answers))
+            answers_list.append(answers)
 
-        print(Fore.YELLOW + "Q " + str(count) + ") " + question[3:])
-        print("\t", votes, votes_text + ".", answers, answers_text + ".\n")
-        count += 1
+    return questions, links, votes_list, answers_list
 
-user_choice = int(input("Enter question number to get answers: ")) - 1   # To take care of array indexing
-print(links[user_choice])
+
+if __name__ == '__main__':
+    init(autoreset=True)
+
+    parser = argparse.ArgumentParser(description='Get answers from Stack Overflow')
+    parser.add_argument("-q", "--query", help="Enter question to search SO")
+    parser.add_argument("-t", "--tag", help="Enter question tag")
+    args = parser.parse_args()
+
+    query = args.query
+    tag = args.tag
+
+    url = "http://stackoverflow.com/search?q=" + quote(query)
+    r = requests.get(url=url)
+    soup = BeautifulSoup(r.text, "lxml")
+
+    questions, links, votes_list, answers_list = get_questions_data(soup)
+
+    print_questions(questions, votes_list, answers_list)
