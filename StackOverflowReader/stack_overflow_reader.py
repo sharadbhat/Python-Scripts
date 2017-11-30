@@ -39,10 +39,13 @@ def print_questions(questions, votes_list, answers_list):
     user_choice = int(input("Enter question number to get answers: ")) - 1
     return user_choice
 
-def get_questions_data(soup):
+def get_questions_data(url):
     """
     -   Extracts relevant data from HTML page.
     """
+    r = requests.get(url=url)
+    soup = BeautifulSoup(r.text, "lxml")
+
     count = 1
     links = []
     questions = []
@@ -71,6 +74,10 @@ def get_questions_data(soup):
     return questions, links, votes_list, answers_list
 
 
+def get_answers(link):
+    """
+    """
+
 if __name__ == '__main__':
     init(autoreset=True) # For colorama
 
@@ -89,13 +96,12 @@ if __name__ == '__main__':
 
     url += quote(query)
 
-    r = requests.get(url=url)
-    soup = BeautifulSoup(r.text, "lxml")
-
     # GET DATA
-    questions, links, votes_list, answers_list = get_questions_data(soup)
+    questions, links, votes_list, answers_list = get_questions_data(url)
 
     # PRINT QUESTIONS
     user_choice = print_questions(questions, votes_list, answers_list)
 
     print(user_choice)
+
+    get_answers(links[user_choice])
