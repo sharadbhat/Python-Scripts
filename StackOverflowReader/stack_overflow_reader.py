@@ -32,6 +32,6 @@ for i in range(0,15):# (10 if (10 < len(divs)) else len(divs))):
         answers = ''.join(re.findall(r'\d+', answers))
         print(question)
         print(excerpt)
-        votes_text = "votes" if str(votes) is not "1" else "vote"
-        answers_text = "answers" if answers is not "1" else "answer"
+        votes_text = "vote" if votes == "1" else "votes"
+        answers_text = "answer" if answers == "1" else "answers"
         print(votes, votes_text + ".", answers, answers_text + ".")
