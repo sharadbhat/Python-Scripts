@@ -60,3 +60,6 @@ for i in range(0, (10 if (10 < len(divs)) else len(divs))):
         print(Fore.YELLOW + "Q " + str(count) + ") " + question[3:])
         print("\t", votes, votes_text + ".", answers, answers_text + ".\n")
         count += 1
+
+user_choice = int(input("Enter question number to get answers: ")) - 1   # To take care of array indexing
+print(links[user_choice])
