@@ -111,7 +111,7 @@ def get_answers(url):
         print(accepted_answer)
     except:
         first_answer = soup.find("div", {"class" : "answer"}).find("div", {"class" : "post-text"}).text.strip()
-        print("\n", Fore.YELLOW + "FIRST ANSWER\n\n")
+        print("\n\n", Fore.YELLOW + "FIRST ANSWER\n")
         print(first_answer)
 
     open_browser = (input("\nOpen in browser? (Y/N) ")).lower()
