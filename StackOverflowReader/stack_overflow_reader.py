@@ -12,29 +12,32 @@ def print_questions(questions, votes_list, answers_list):
     count = 1
     print(Fore.GREEN + "\nHere are the results sorted by relevance\n\n")
     for i in range(0, len(questions)):
-            question = questions[i]
+        question = questions[i]
 
-            votes = votes_list[i]
-            votes_text = "vote" if votes == "1" else "votes"
+        votes = votes_list[i]
+        votes_text = "vote" if votes == "1" else "votes"
 
-            # SET COLOUR
-            if int(votes) < 2:
-                votes = Fore.RED + votes
-            else:
-                votes = Fore.GREEN + votes
+        # SET COLOUR
+        if int(votes) < 2:
+            votes = Fore.RED + votes
+        else:
+            votes = Fore.GREEN + votes
 
-            answers = answers_list[i]
-            answers_text = "answer" if answers == "1" else "answers"
+        answers = answers_list[i]
+        answers_text = "answer" if answers == "1" else "answers"
 
-            # SET COLOUR
-            if int(answers) < 1:
-                answers = Fore.RED + answers
-            else:
-                answers = Fore.GREEN + answers
+        # SET COLOUR
+        if int(answers) < 1:
+            answers = Fore.RED + answers
+        else:
+            answers = Fore.GREEN + answers
 
-            print(Fore.YELLOW + "Q " + str(count) + ") " + question[3:])
-            print("\t", votes, votes_text + ".", answers, answers_text + ".\n")
-            count += 1
+        print(Fore.YELLOW + "Q " + str(count) + ") " + question[3:])
+        print("\t", votes, votes_text + ".", answers, answers_text + ".\n")
+        count += 1
+
+    user_choice = int(input("Enter question number to get answers: ")) - 1
+    return user_choice
 
 def get_questions_data(soup):
     """
@@ -74,7 +77,7 @@ if __name__ == '__main__':
     url = "http://stackoverflow.com/search?q="
 
     parser = argparse.ArgumentParser(description='Get answers from Stack Overflow')
-    parser.add_argument("-q", "--query", help="Enter question to search SO")
+    parser.add_argument("-q", "--query", help="Enter question to search SO", required=True)
     parser.add_argument("-t", "--tag", help="Enter question tag")
     args = parser.parse_args()
 
@@ -85,10 +88,14 @@ if __name__ == '__main__':
         url += "[{}]+".format(quote(tag))
 
     url += quote(query)
-    
+
     r = requests.get(url=url)
     soup = BeautifulSoup(r.text, "lxml")
 
+    # GET DATA
     questions, links, votes_list, answers_list = get_questions_data(soup)
 
-    print_questions(questions, votes_list, answers_list)
+    # PRINT QUESTIONS
+    user_choice = print_questions(questions, votes_list, answers_list)
+
+    print(user_choice)
