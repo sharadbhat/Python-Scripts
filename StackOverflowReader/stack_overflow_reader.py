@@ -3,6 +3,7 @@ import argparse
 from requests.utils import quote
 from bs4 import BeautifulSoup
 import re
+import os
 from colorama import init, Fore
 
 def print_questions(questions, votes_list, answers_list):
@@ -39,6 +40,8 @@ def print_questions(questions, votes_list, answers_list):
     user_choice = int(input("Enter question number to get answers: ")) - 1
     return user_choice
 
+
+
 def get_questions_data(url):
     """
     -   Extracts relevant data from HTML page.
@@ -74,9 +77,38 @@ def get_questions_data(url):
     return questions, links, votes_list, answers_list
 
 
-def get_answers(link):
+
+def get_answers(url):
     """
+    - Displays entire question and accepted answer or top answer.
     """
+    r = requests.get(url=url)
+    soup = BeautifulSoup(r.text, "lxml")
+
+    print("\n\n", Fore.YELLOW + "QUESTION\n")
+    full_question = soup.find("div", {"class" : "post-text"}).text.strip()
+    print(full_question)
+
+    try:
+        accepted_answer = soup.find("div", {"class" : "accepted-answer"}).find("div", {"class" : "post-text"}).text.strip()
+        print("\n\n", Fore.GREEN + "ACCEPTED ANSWER\n")
+        print(accepted_answer)
+    except:
+        first_answer = soup.find("div", {"class" : "answer"}).find("div", {"class" : "post-text"}).text.strip()
+        print("\n", Fore.YELLOW + "FIRST ANSWER\n\n")
+        print(first_answer)
+
+    open_browser = (input("\nOpen in browser? (Y/N) ")).lower()
+    if open_browser == "y":
+        os.startfile(url)
+
+    return_back = (input("Return back to results? (Y/N) ")).lower()
+    if return_back == "y":
+        return True
+    else:
+        return False
+
+
 
 if __name__ == '__main__':
     init(autoreset=True) # For colorama
@@ -99,9 +131,9 @@ if __name__ == '__main__':
     # GET DATA
     questions, links, votes_list, answers_list = get_questions_data(url)
 
-    # PRINT QUESTIONS
-    user_choice = print_questions(questions, votes_list, answers_list)
-
-    print(user_choice)
-
-    get_answers(links[user_choice])
+    # PRINT QUESTIONS AND GET ANSWER
+    while True:
+        user_choice = print_questions(questions, votes_list, answers_list)
+        return_back = get_answers(links[user_choice])
+        if return_back == False:
+            break
