@@ -75,21 +75,20 @@ def get_questions_data(url):
     divs = soup.findAll("div", {"class" : "question-summary search-result"})
     for i in range(0, (10 if (10 < len(divs)) else len(divs))):
         question = divs[i].a.text.strip()
-        if question[0] == "Q":
-            questions.append(question)
+        questions.append(question)
 
-            link = "https://stackoverflow.com" + (divs[i].find("a"))['href'].strip()
-            links.append(link)
+        link = "https://stackoverflow.com" + (divs[i].find("a"))['href'].strip()
+        links.append(link)
 
-            votes = divs[i].find("span", {"class" : "vote-count-post"}).text.strip()
-            votes_list.append(votes)
+        votes = divs[i].find("span", {"class" : "vote-count-post"}).text.strip()
+        votes_list.append(votes)
 
-            try:
-                answers = divs[i].find("div", {"class" : "status answered-accepted"}).text.strip()
-            except:
-                answers = divs[i].find("div", {"class" : "status answered"}).text.strip()
-            answers = ''.join(re.findall(r'\d+', answers))
-            answers_list.append(answers)
+        try:
+            answers = divs[i].find("div", {"class" : "status answered-accepted"}).text.strip()
+        except:
+            answers = divs[i].find("div", {"class" : "status answered"}).text.strip()
+        answers = ''.join(re.findall(r'\d+', answers))
+        answers_list.append(answers)
 
     return questions, links, votes_list, answers_list
 
@@ -147,7 +146,7 @@ if __name__ == '__main__':
     if tag:
         url += "[{}]+".format(quote(tag))
 
-    url += quote(query)
+    url += quote(query) + quote(" is:question")
 
     # GET DATA
     questions, links, votes_list, answers_list = get_questions_data(url)
