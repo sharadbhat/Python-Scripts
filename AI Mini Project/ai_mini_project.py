@@ -1,3 +1,8 @@
+"""
+- Sharad Bhat
+- 10th November, 2017
+"""
+
 from random import random, randint
 from operator import add
 from functools import reduce

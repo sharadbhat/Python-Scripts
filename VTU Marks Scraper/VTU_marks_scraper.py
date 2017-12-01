@@ -1,3 +1,8 @@
+"""
+- Sharad Bhat
+- 3rd November, 2017
+"""
+
 import requests
 import bs4
 import csv

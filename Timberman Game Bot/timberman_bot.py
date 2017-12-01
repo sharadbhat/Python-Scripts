@@ -1,3 +1,8 @@
+"""
+- Sharad Bhat
+- 3rd November, 2017
+"""
+
 from PIL import ImageGrab, Image
 import pyautogui
 import time

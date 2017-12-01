@@ -1,3 +1,8 @@
+"""
+- Sharad Bhat
+- 5th November, 2017
+"""
+
 import win32com.client as wincl
 import pymysql
 import tweepy
