@@ -66,6 +66,6 @@ id3.save(v2_version=3)
 # To rename the file. Currently only for Windows.
 file2 = file.replace(os.path.basename(file), artist_name + " - " + track_name + ".mp3")
 
-print("Renaming file to {} - {}.mp3".format(artist_name, track_name))
+print("Renaming file to \"{} - {}.mp3\"".format(artist_name, track_name))
 
 os.rename(file, file2)
