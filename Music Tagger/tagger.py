@@ -5,4 +5,10 @@ client_secret = ""
 with open("key.txt", "r") as f:
     client_secret = f.readline().strip()
 
-print(client_secret)
+body = {"grant_type" : "client_credentials",
+        "client_id" : client_id,
+        "client_secret" : client_secret}
+r = requests.post(url="https://accounts.spotify.com/api/token", data=body)
+r = r.json()
+
+token = r["access_token"]
