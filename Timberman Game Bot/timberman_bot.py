@@ -27,6 +27,7 @@ class Timberman():
 
     def run(self):
         previous = "left"
+        none_count = 0
         while True:
             time.sleep(0.035)
             self.get_screen()
@@ -45,6 +46,9 @@ class Timberman():
             else:
                 pyautogui.press(previous)
                 print("none")
+                if none_count == 4:
+                    exit()
+                none_count += 1
 
 
 if __name__ == '__main__':
