@@ -83,12 +83,15 @@ id3.add(TPE1(encoding=3, text=artist_name[choice]))
 
 id3.save(v2_version=3)
 
+for i in invalid_characters:
+    if i in artist_name[choice]:
+        artist_name[choice] = artist_name[choice].replace(i, "")
+    if i in track_name[choice]:
+        track_name[choice] = track_name[choice].replace(i, "")
+
+
 # To rename the file. Currently only for Windows.
 file2 = file.replace(os.path.basename(file), artist_name[choice] + " - " + track_name[choice] + ".mp3")
-
-for i in invalid_characters:
-    if i in file2:
-        file2.replace(i, "")
 
 print("Renaming file to \"{} - {}.mp3\"".format(artist_name[choice], track_name[choice]))
 
