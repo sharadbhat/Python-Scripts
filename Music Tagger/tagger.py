@@ -19,6 +19,8 @@ file = args.file
 track = args.track
 artist = args.artist
 
+invalid_characters = ['/', '\\', ':', '?', '*', '|', '<', '>', '"']
+
 if not os.path.isfile(file):
     print("INVALID FILE PATH")
     exit()
@@ -43,29 +45,51 @@ token = r["access_token"]
 print("Downloading track information")
 
 head = {"Authorization" : "Bearer " + token}
-r = requests.get(url="https://api.spotify.com/v1/search?q=track:{}&artist:{}&type=track".format(track, artist), headers = head)
+url = "https://api.spotify.com/v1/search?q=track:{}&artist:{}&type=track".format(track, artist)
+print(url)
+r = requests.get(url=url, headers = head)
+print(r.text)
 r = r.json()
 
-artist_name = r["tracks"]["items"][0]["artists"][0]["name"]
-image_url = r["tracks"]["items"][0]["album"]["images"][0]["url"]
-album_name = r["tracks"]["items"][0]["album"]["name"]
-track_name = r["tracks"]["items"][0]["name"]
+artist_name = []
+image_url = []
+album_name = []
+track_name = []
+
+for i in r["tracks"]["items"]:
+    artist_name.append(i["artists"][0]["name"])
+    image_url.append(i["album"]["images"][0]["url"])
+    album_name.append(i["album"]["name"])
+    track_name.append(i["name"])
+
+for i in range(len(artist_name)):
+    print(i + 1)
+    print("Artist: " + artist_name[i])
+    print("Track: " + track_name[i])
+    print("Album: " + album_name[i])
+    print("")
+
+choice = int(input("Select a track: ")) - 1
 
 print("Downloading album art")
 
-imagedata = requests.get(image_url).content
+imagedata = requests.get(image_url[choice]).content
 
 id3 = ID3(file)
 id3.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
-id3.add(TIT2(encoding=3, text=track_name))
-id3.add(TALB(encoding=3, text=album_name))
-id3.add(TPE1(encoding=3, text=artist_name))
+id3.add(TIT2(encoding=3, text=track_name[choice]))
+id3.add(TALB(encoding=3, text=album_name[choice]))
+id3.add(TPE1(encoding=3, text=artist_name[choice]))
 
 id3.save(v2_version=3)
 
 # To rename the file. Currently only for Windows.
-file2 = file.replace(os.path.basename(file), artist_name + " - " + track_name + ".mp3")
+file2 = file.replace(os.path.basename(file), artist_name[choice] + " - " + track_name[choice] + ".mp3")
 
-print("Renaming file to \"{} - {}.mp3\"".format(artist_name, track_name))
+for i in invalid_characters:
+    if i in file2:
+        file2.replace(i, "")
+
+print("Renaming file to \"{} - {}.mp3\"".format(artist_name[choice], track_name[choice]))
 
 os.rename(file, file2)
