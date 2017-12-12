@@ -7,7 +7,7 @@ import requests
 import argparse
 import os
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, TIT2, TPE1, TALB
+from mutagen.id3 import ID3, APIC, TIT2, TPE2, TALB
 
 parser = argparse.ArgumentParser(description='Add metadata to your music')
 parser.add_argument("-f", "--file", help="Enter path to music file", required=True)
@@ -105,8 +105,7 @@ id3 = ID3(file)
 id3.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
 id3.add(TIT2(encoding=3, text=track_name[choice]))
 id3.add(TALB(encoding=3, text=album_name[choice]))
-id3.add(TPE1(encoding=3, text=artist_name[choice]))
-
+id3.add(TPE2(encoding=3, text=artist_name[choice]))
 id3.save(v2_version=3)
 
 for i in invalid_characters:
