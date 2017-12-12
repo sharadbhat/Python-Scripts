@@ -46,9 +46,8 @@ print("Downloading track information")
 
 head = {"Authorization" : "Bearer " + token}
 url = "https://api.spotify.com/v1/search?q=track:{}&artist:{}&type=track".format(track, artist)
-print(url)
+
 r = requests.get(url=url, headers = head)
-print(r.text)
 r = r.json()
 
 artist_name = []
@@ -62,14 +61,41 @@ for i in r["tracks"]["items"]:
     album_name.append(i["album"]["name"])
     track_name.append(i["name"])
 
-for i in range(len(artist_name)):
-    print(i + 1)
-    print("Artist: " + artist_name[i])
-    print("Track: " + track_name[i])
-    print("Album: " + album_name[i])
-    print("")
+offset = 0
+flag = False
+while True:
+    for i in range(offset, (offset + 5) if (offset + 5) < len(artist_name) else len(artist_name)):
+        print(str(i + 1) + ".")
+        print("Artist: " + artist_name[i])
+        print("Track: " + track_name[i])
+        print("Album: " + album_name[i])
+        print("")
 
-choice = int(input("Select a track: ")) - 1
+    if offset + 5 < len(artist_name):
+        print("Press \"N\" for next 5 tracks")
+        print("Or press \"Q\" to quit")
+    else:
+        flag = True
+        print("No more tracks available.")
+        print("Press \"Q\" to quit")
+    choice = input("Or select a track: ").lower()
+    if choice == "n":
+        if flag == True:
+            offset = len(artist_name)
+            print("\nNo more tracks available.")
+        else:
+            offset += 5 if 5 < (len(artist_name) - offset) else (len(artist_name) - offset)
+    elif choice == "q":
+        exit()
+    else:
+        choice = int(choice)
+        if choice < 0 or choice > ((offset + 5) if (offset + 5) < len(artist_name) else len(artist_name)):
+            print("Choice invalid.")
+            exit()
+        choice -= 1
+        break
+
+
 
 print("Downloading album art")
 
