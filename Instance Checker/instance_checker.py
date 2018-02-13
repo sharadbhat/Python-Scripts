@@ -12,4 +12,4 @@ for pid in psutil.pids():
             print("Instance already running")
             sys.exit(0)
 
-time.sleep(100)
+time.sleep(100) # Only for testing of script
