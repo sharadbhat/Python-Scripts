@@ -4,28 +4,25 @@
 """
 
 import requests
-import argparse
 import os
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, TIT2, TPE2, TALB
 
-parser = argparse.ArgumentParser(description='Add metadata to your music')
-parser.add_argument("-f", "--file", help="Enter path to music file", required=True)
-parser.add_argument("-t", "--track", help="Enter track name", required=True)
-parser.add_argument("-a", "--artist", help="Enter artist name", required=True)
-args = parser.parse_args()
+Tk().withdraw()
 
-file = args.file
-track = args.track
-artist = args.artist
+filename = askopenfilename()
+track = input("Enter track name: ")
+artist = input("Enter artist name: ")
 
 invalid_characters = ['/', '\\', ':', '?', '*', '|', '<', '>', '"']
 
-if not os.path.isfile(file):
+if not os.path.isfile(filename):
     print("INVALID FILE PATH")
     exit()
 
-if file[-3:] != 'mp3':
+if filename[-3:] != 'mp3':
     print("Supports only mp3 files.")
     exit()
 
@@ -101,7 +98,7 @@ print("Downloading album art")
 
 imagedata = requests.get(image_url[choice]).content
 
-id3 = ID3(file)
+id3 = ID3(filename)
 id3.add(APIC(3, 'image/jpeg', 3, 'Front cover', imagedata))
 id3.add(TIT2(encoding=3, text=track_name[choice]))
 id3.add(TALB(encoding=3, text=album_name[choice]))
@@ -115,9 +112,9 @@ for i in invalid_characters:
         track_name[choice] = track_name[choice].replace(i, "")
 
 
-# To rename the file. Currently only for Windows.
-file2 = file.replace(os.path.basename(file), artist_name[choice] + " - " + track_name[choice] + ".mp3")
+# To rename the filename. Currently only for Windows.
+file2 = filename.replace(os.path.basename(filename), artist_name[choice] + " - " + track_name[choice] + ".mp3")
 
-print("Renaming file to \"{} - {}.mp3\"".format(artist_name[choice], track_name[choice]))
+print("Renaming filename to \"{} - {}.mp3\"".format(artist_name[choice], track_name[choice]))
 
-os.rename(file, file2)
+os.rename(filename, file2)
